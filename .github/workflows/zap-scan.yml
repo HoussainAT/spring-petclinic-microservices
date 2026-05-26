@@ -1,0 +1,33 @@
+name: OWASP ZAP Full Scan
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  zap-full-scan:
+    runs-on: ubuntu-latest
+    name: ZAP Full Scan — OWASP A05 Security Misconfiguration
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: OWASP ZAP Full Scan
+        uses: zaproxy/action-full-scan@v0.10.0
+        with:
+          target: "http://${{ secrets.ZAP_TARGET }}:8080"
+          rules_file_name: ".zap/rules.tsv"
+          cmd_options: "-a"
+          allow_issue_writing: false
+
+      - name: Upload ZAP Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: zap-report-${{ github.run_number }}
+          path: |
+            report_html.html
+            report_md.md
+          retention-days: 30

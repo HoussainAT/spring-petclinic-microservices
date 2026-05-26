@@ -1,0 +1,14 @@
+management:
+  endpoints:
+    web:
+      exposure:
+        # Expose only health and info — all other actuator endpoints are disabled
+        include: "health,info"
+  endpoint:
+    health:
+      show-details: never
+    info:
+      enabled: true
+  server:
+    # Bind actuator to a separate internal port (not exposed via Security Group)
+    port: 8081
